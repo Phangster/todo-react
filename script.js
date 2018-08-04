@@ -9,7 +9,8 @@ class List extends React.Component {
 
   state = {
     list : [],
-    word : ""
+    word : "",
+    doneList : []
   }
 
   changeHandler(event){
@@ -24,26 +25,20 @@ class List extends React.Component {
     event.preventDefault();
   }
 
-  removeItem(event){
-    var currentList = this.state.list;
-    currentList.splice(event, 1);
-    this.setState( { list : currentList } );
-  }
-
-  editItem(id){
+  removeItem(id){
     console.log(id)
     var currentList = this.state.list;
     currentList.splice(id, 1);
     this.setState( { list : currentList } );
   }
 
-  render() {
+  render(){
     // render the list with a map() here
     let tasks = this.state.list.map((message, id) => {
       return(<div className='box'><li key={id}>{message}
         <button class='btn-warning' onClick={event => this.removeItem(id)}>Delete</button>
-        <button class='btn-success' onClick={event => this.editItem(id)}>Edit</button>
-
+        <button class='btn-success' onClick={event => this.doneItem(id)}>Done</button>
+        
       </li></div>)
     });
     console.log(tasks);
@@ -59,9 +54,55 @@ class List extends React.Component {
         </div>
         <ul>
           {tasks}
-        </ul>   
+        </ul>  
+        <div className="list">
+          <h1>DONE</h1><br />
+          <ul>
+            <Done/>
+          </ul>
+        </div>
       </div>
     );
+  }
+}
+class Done extends React.Component {
+
+  constructor(props){
+    super(props)
+      this.doneItem = this.doneItem.bind( this );
+  }
+
+  state = {
+    list : [],
+    doneList : []
+  }
+
+  doneItem(id){
+    console.log(id)
+    var doneList = this.state.doneList;
+    var nowList = this.state.list;
+    doneList.push(nowList[id]);
+    nowList.splice(id, 1);
+    this.setState({ 
+      list : nowList,
+      doneList : doneList
+    })
+  }
+
+  render(){
+    let done = this.state.doneList.map((done, id)=>{
+      return(<li key={id}>{done}
+        <button class='btn-success' onClick={this.doneItem(id)}>Done</button>
+      </li>)
+    });
+
+  return(
+    <div> 
+      <ul>
+        {done}
+      </ul>
+    </div>
+    )
   }
 }
 
